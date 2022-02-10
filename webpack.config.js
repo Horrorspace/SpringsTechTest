@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
@@ -43,6 +44,7 @@ module.exports = {
         path: path.resolve(__dirname, './build/client'),
     },
     plugins: [
+        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             title: 'Chat App',
             template: './src/client/assets/html/template.html',
@@ -51,9 +53,16 @@ module.exports = {
                 collapseWhitespace: isProd
             }
         }),
-        new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
             filename: 'public/css/[name].css'
+        }),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, 'src/client/assets/img/ico/favicon.ico'),
+                    to: path.resolve(__dirname, 'build/client')
+                }
+            ],
         }),
     ],
     resolve: {

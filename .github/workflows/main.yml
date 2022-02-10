@@ -1,0 +1,38 @@
+name: CI
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Run npm install
+        run: npm install
+      - name: Run npm server-build
+        run: npm run server-build
+      - name: Run npm client-build
+        run: npm run client-build
+      - name: Run git config
+        run: |
+          git config user.name "Utkin Eugeniy"
+          git config user.email "utkineugeniy@gmail.com"
+      - name: Run git fetch
+        run: git fetch --all
+      - name: Run git checkout -b deploy
+        run: git checkout -b deploy
+      - name: Run git add
+        run: |
+          git add --force build
+      - name: Run git commit -m "generated"
+        run: git commit -m "generated"
+      - name: Run git push
+        run: git push --force origin HEAD:deploy
